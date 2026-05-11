@@ -188,6 +188,17 @@ main h2 {
     line-height: 1.4;
 }
 
+main ul {
+    list-style: none;
+}
+
+main li {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    margin: 0 auto var(--space-md);
+}
+
 main p {
     font-size: 1.1rem;
     /* Muted text achieved via opacity on dark color */
@@ -196,6 +207,7 @@ main p {
     max-width: 42rem;
     margin: 0 auto var(--space-2xl);
     line-height: 1.75;
+    padding: 0 var(--space-lg);
 }
 
 /* ---------- Logo ---------- */
