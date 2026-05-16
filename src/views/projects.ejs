@@ -6,14 +6,14 @@
 
         <p>Here are a few of our service projects:</p>
         <ul>
-
             <% projects.forEach(project=> { %>
                 <li>
-                    <%= New Date(project.event_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %> -
-                    <strong><%= project.title %></strong>
-                    <p><%= project.organization_name %></p>
+                    <%= new Date(project.event_date).toLocaleDateString('en-US', { year: 'numeric' , month: 'long' ,
+                        day: 'numeric' }) %>:
+                        <%= project.title %>
+                            (<%= project.title %>)
                 </li>
-                <% }); %>
+                <% }) %>
         </ul>
     </main>
 
