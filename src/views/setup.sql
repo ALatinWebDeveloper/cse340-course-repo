@@ -47,3 +47,52 @@ INSERT INTO projects (organization_id, title, description, location, event_date)
 (3, 'Youth Mentoring Kickoff',      'Launching a new youth mentoring program with training sessions.', 'YMCA', '2026-05-20'),
 (3, 'Beach Clean-Up',               'Volunteer day to clean up litter along the shoreline.', 'Pebble Beach', '2026-06-08'),
 (3, 'Holiday Meal Packing',         'Packing holiday meal boxes for families in need.', 'UnityServe Warehouse', '2026-12-10');
+
+/*Week 2 mid*/
+
+--Create categories table.
+CREATE TABLE categories (
+    category_id SERIAL PRIMARY KEY,
+    name        VARCHAR(100) NOT NULL UNIQUE
+);
+
+--Create project categories.
+CREATE TABLE project_categories (
+    project_id  INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
+    PRIMARY KEY (project_id, category_id),
+    CONSTRAINT fk_project
+        FOREIGN KEY (project_id)
+        REFERENCES projects (project_id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_category
+        FOREIGN KEY (category_id)
+        REFERENCES categories (category_id)
+        ON DELETE CASCADE
+);
+
+--Insert categories.
+INSERT INTO project_categories (project_id, category_id) VALUES
+(1, 1),
+(7, 1),
+(9, 1),
+(14, 1);
+
+INSERT INTO project_categories (project_id, category_id) VALUES
+(4, 2),
+(8, 2),
+(10, 2),
+(11, 2),
+(13, 2);
+
+INSERT INTO project_categories (project_id, category_id) VALUES
+(1, 3),
+(2, 3),
+(3, 3),
+(5, 3),
+(6, 3),
+(7, 3),
+(11, 3),
+(12, 3),
+(14, 3),
+(15, 3);
