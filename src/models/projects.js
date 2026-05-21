@@ -1,14 +1,34 @@
 import db from './db.js'
 
 const getAllProjects = async () => {
-    const query = `
+  const query = `
         SELECT project_id, organization_id, title, description, location, event_date
       FROM public.projects;
     `;
 
-    const result = await db.query(query);
+  const result = await db.query(query);
 
-    return result.rows;
-}
+  return result.rows;
+};
 
-export { getAllProjects }
+const getProjectsByOrganizationId = async (organizationId) => {
+  const query = `
+        SELECT
+          project_id,
+          organization_id,
+          title,
+          description,
+          location,
+          date
+        FROM project
+        WHERE organization_id = $1
+        ORDER BY date;
+      `;
+
+  const queryParams = [organizationId];
+  const result = await db.query(query, queryParams);
+
+  return result.rows;
+};
+
+export { getAllProjects, getProjectsByOrganizationId };
