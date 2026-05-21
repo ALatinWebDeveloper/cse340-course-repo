@@ -1,0 +1,30 @@
+<%- include('partials/header') %>
+
+    <main>
+        <h1>
+            <%= project.title %>
+        </h1>
+
+        <p><strong>Date:</strong>
+            <%= new Date(project.date).toLocaleDateString('en-US', { year: 'numeric' , month: 'long' , day: 'numeric' })
+                %>
+        </p>
+
+        <p><strong>Location:</strong>
+            <%= project.location %>
+        </p>
+
+        <p><strong>Description:</strong>
+            <%= project.description %>
+        </p>
+
+        <p><strong>Partner Organization:</strong>
+            <a href="/organization/<%= project.organization_id %>">
+                <%= project.organization_name %>
+            </a>
+        </p>
+
+        <p><a href="/projects">← Back to Upcoming Projects</a></p>
+    </main>
+
+    <%- include('partials/footer') %>
