@@ -24,6 +24,19 @@
             </a>
         </p>
 
+        <p><strong>Categories:</strong>
+            <% if (categories && categories.length> 0) { %>
+                <% categories.forEach((cat, index)=> { %>
+                    <a href="/category/<%= cat.category_id %>">
+                        <%= cat.name %>
+                    </a>
+                    <% if (index < categories.length - 1) { %>, <% } %>
+                            <% }) %>
+                                <% } else { %>
+                                    No categories assigned.
+                                    <% } %>
+        </p>
+
         <p><a href="/projects">← Back to Upcoming Projects</a></p>
     </main>
 

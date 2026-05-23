@@ -19,22 +19,26 @@ async function showProjectsPage(req, res) {
 }
 
 // New controller for a single project’s details
-async function showProjectDetailsPage(req, res) {
+async function showProjectDetailsPage(req, res, next) {
     try {
         const projectId = req.params.id;               // Extract ID from URL
         const project = await getProjectDetails(projectId);
 
         if (!project) {
-            return res.status(404).send('Project not found');
+            const err = new Error('Project not found');
+            err.status = 404;
+            return next(err);   // now 'next' is defined
         }
 
         res.render('project', {                        // Renders views/project.ejs
             title: project.title,
-            project
+            project,
+            categories: project.categories                 // Include categories for this project
         });
     } catch (error) {
-        console.error('Error fetching project details:', error);
-        res.status(500).send('Server Error');
+        // unexpected errors (e.g., database connection) -> 500
+        error.status = 500;
+        next(error);
     }
 }
 

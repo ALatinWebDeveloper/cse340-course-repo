@@ -1,21 +1,20 @@
 <%- include('partials/header') %>
+
     <main>
         <h1>
             <%= title %>
         </h1>
 
-        <p>Here are a few of our service categories:</p>
-        <ul>
+        <p>Our service projects are organized into the following categories:</p>
 
+        <ul>
             <% categories.forEach(category=> { %>
                 <li>
-                    <strong>
-                <li>
-                    <%= category.name %>
+                    <a href="/category/<%= category.category_id %>">
+                        <%= category.name %>
+                    </a>
                 </li>
-                </strong>
-                </li>
-                <% }); %>
+                <% }) %>
         </ul>
     </main>
 

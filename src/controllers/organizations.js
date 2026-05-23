@@ -8,13 +8,24 @@ const showOrganizationsPage = async (req, res) => {
     res.render('organizations', { title, organizations });
 };
 
-const showOrganizationDetailsPage = async (req, res) => {
-    const organizationId = req.params.id;
-    const organizationDetails = await getOrganizationDetails(organizationId);
-    const projects = await getProjectsByOrganizationId(organizationId);
-    const title = 'Organization Details';
+const showOrganizationDetailsPage = async (req, res, next) => {
+    try {
+        const organizationId = req.params.id;
+        const organizationDetails = await getOrganizationDetails(organizationId);
+        const projects = await getProjectsByOrganizationId(organizationId);
+        const title = 'Organization Details';
 
-    res.render('organization', { title, organizationDetails, projects });
+        if (!organizationDetails) {
+            const err = new Error('Organization not found');
+            err.status = 404;
+            return next(err);
+        }
+
+        res.render('organization', { title, organizationDetails, projects });
+    } catch (error) {
+        console.error('Error fetching organization details:', error);
+        next(error);
+    }
 };
 
 export { showOrganizationsPage, showOrganizationDetailsPage };
