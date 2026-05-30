@@ -1,0 +1,71 @@
+<!-- views/edit-project.ejs -->
+<%- include('partials/header') %>
+
+    <main>
+        <h1>
+            <%= title %>
+        </h1>
+
+        <%# Flash messages (if any) %>
+            <% const messages=flash(); %>
+                <% Object.keys(messages).forEach(type=> { %>
+                    <% if (messages[type].length> 0) { %>
+                        <% messages[type].forEach(msg=> { %>
+                            <div class="alert <%= type %>">
+                                <%= msg %>
+                            </div>
+                            <% }); %>
+                                <% } %>
+                                    <% }); %>
+
+                                        <form action="/edit-project/<%= projectDetails.project_id %>" method="POST">
+                                            <fieldset>
+                                                <legend>Edit Service Project</legend>
+
+                                                <div class="form-group">
+                                                    <label for="title">Title:</label>
+                                                    <input type="text" id="title" name="title"
+                                                        value="<%= projectDetails.title %>" required>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="description">Description:</label>
+                                                    <textarea id="description" name="description"
+                                                        rows="5"><%= projectDetails.description %></textarea>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="location">Location:</label>
+                                                    <input type="text" id="location" name="location"
+                                                        value="<%= projectDetails.location %>">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="event_date">Date:</label>
+                                                    <%# Format the date as YYYY-MM-DD for the date input field %>
+                                                        <input type="date" id="event_date" name="event_date"
+                                                            value="<%= new Date(projectDetails.date).toISOString().slice(0,10) %>">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="organization_id">Partner Organization:</label>
+                                                    <select id="organization_id" name="organization_id" required>
+                                                        <% organizations.forEach(org=> { %>
+                                                            <option value="<%= org.organization_id %>"
+                                                                <%=org.organization_id===projectDetails.organization_id
+                                                                ? 'selected' : '' %>>
+                                                                <%= org.name %>
+                                                            </option>
+                                                            <% }); %>
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-actions">
+                                                    <button type="submit">Update Project</button>
+                                                    <a href="/project/<%= projectDetails.project_id %>">Cancel</a>
+                                                </div>
+                                            </fieldset>
+                                        </form>
+    </main>
+
+    <%- include('partials/footer') %>
