@@ -71,4 +71,51 @@ const updateCategoryAssignments = async (projectId, categoryIds) => {
   }
 }
 
-export { getAllCategories, getCategoryById, getCategoriesByProject, getProjectsByCategory, assignCategoryToProject, updateCategoryAssignments };
+const createCategory = async (category_name) => {
+  const query = `
+        INSERT INTO categories (name)
+        VALUES ($1)
+        RETURNING category_id;
+    `;
+  
+  const parameters = [category_name];
+  const result = await db.query(query, parameters);
+
+  if (result.rows.length === 0) {
+    throw new Error('Failed to create category');
+  } 
+
+  if (process.env.ENABLE_SQL_LOGGING === 'true') {
+    console.log('Created new category with ID:', result.rows[0].category_id);
+  }
+
+  return result.rows[0].category_id;  // Return the ID of the newly created category
+}
+
+const updateCategory = async (categoryId, category_name) => {
+  const query = `
+        UPDATE categories
+        SET name = $1
+        WHERE category_id = $2
+        RETURNING category_id;
+    `;
+  
+  const queryParams = [category_name, categoryId];
+  const result = await db.query(query, queryParams);
+  
+  if (result.rows.length === 0) {
+    throw new Error('Category not found');
+  }
+
+  if(process.env.ENABLE_SQL_LOGGING === 'true') {
+    console.log('Updated category with ID:', categoryId);
+  }
+
+  return result.rows[0].category_id;  // Return the ID of the updated category
+}
+
+export {
+  getAllCategories, getCategoryById, getCategoriesByProject,
+  getProjectsByCategory, assignCategoryToProject, updateCategoryAssignments,
+  createCategory, updateCategory
+};
