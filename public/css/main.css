@@ -210,6 +210,14 @@ main p {
     padding: 0 var(--space-lg);
 }
 
+main a {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--transition-fast);
+    margin-top: var(--space-md);
+}
+
 /* ---------- Logo ---------- */
 .main-logo {
     display: block;
