@@ -5,7 +5,7 @@ const saltRounds = 10;
 
 const showUserRegistrationForm = (req, res) => {
     res.render('register', { title: 'Register' });
-}
+};
 
 const processUserRegistrationForm = async (req, res) => {
     const { name, email, password } = req.body;
@@ -26,24 +26,24 @@ const processUserRegistrationForm = async (req, res) => {
         req.flash('error', 'An error occurred while registering. Please try again.');
         res.redirect('/register');
     }
-}
+};
 
 const showLoginForm = (req, res) => {
 
     res.render('login', { title: 'Login' });
-}
+};
 
 const processLoginForm = async (req, res) => {
     const { email, password } = req.body;
 
-    
+
 
     try {
-        
+
         const user = await authenticateUser(email, password);
 
         if (user) {
-            
+
             req.session.user = user;
             req.flash('success', 'Login successful! Welcome in, ' + user.name + '.');
 
@@ -57,7 +57,7 @@ const processLoginForm = async (req, res) => {
             req.flash('error', 'Invalid email or password. Please try again.');
             return res.redirect('/login');
         }
-    
+
     } catch (error) {
         console.error('Error during login:', error);
         req.flash('error', 'An error occurred during login. Please try again.');
@@ -91,4 +91,23 @@ const showDashboard = (req, res) => {
     });
 };
 
-export { showUserRegistrationForm, processUserRegistrationForm, showLoginForm, processLoginForm, processLogout, requireLogin, showDashboard };
+const requireRole = (role) => {
+    return (req, res, next) => {
+        // Check if user is logged in first
+        if (!req.session || !req.session.user) {
+            req.flash('error', 'You must be logged in to access this page.');
+            return res.redirect('/login');
+        }
+
+        // Check if user's role matches the required role
+        if (req.session.user.role_name !== role) {
+            req.flash('error', 'You do not have permission to access this page.');
+            return res.redirect('/');
+        }
+
+        // User has required role, continue
+        next();
+    };
+};
+
+export { showUserRegistrationForm, processUserRegistrationForm, showLoginForm, processLoginForm, processLogout, requireLogin, requireRole, showDashboard };

@@ -115,4 +115,3 @@ CREATE TABLE users (
 	role_id INTEGER REFERENCES roles (role_id),
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
