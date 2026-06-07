@@ -239,6 +239,23 @@ main a {
         0 10px 14px -8px rgba(0, 0, 0, 0.06);
 }
 
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.user-table th,
+.user-table td {
+    padding: 0.75rem;
+    border: 1px solid var(--color-light);
+    text-align: left;
+}
+
+.user-table th {
+    background-color: var(--color-accent);
+}
+
 /* ---------- Footer ---------- */
 footer {
     background-color: var(--color-dark);

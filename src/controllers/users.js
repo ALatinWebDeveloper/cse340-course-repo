@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { createNewUser, authenticateUser } from '../models/users.js';
+import { createNewUser, authenticateUser, getAllUsers } from '../models/users.js';
 
 const saltRounds = 10;
 
@@ -110,4 +110,16 @@ const requireRole = (role) => {
     };
 };
 
-export { showUserRegistrationForm, processUserRegistrationForm, showLoginForm, processLoginForm, processLogout, requireLogin, requireRole, showDashboard };
+const displayUserInfo = async (req, res) => {
+
+    const users = await getAllUsers();
+    const title = 'User Information';
+
+    res.render('user-info', { title, users: users || [] });
+}
+
+export {
+    showUserRegistrationForm, processUserRegistrationForm,
+    showLoginForm, processLoginForm, processLogout, requireLogin,
+    requireRole, showDashboard, displayUserInfo
+};

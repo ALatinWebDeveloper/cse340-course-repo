@@ -21,7 +21,7 @@ import {
 
 import {
     showUserRegistrationForm, processUserRegistrationForm, showLoginForm,
-    processLoginForm, processLogout, showDashboard, requireRole, requireLogin
+    processLoginForm, processLogout, showDashboard, requireRole, requireLogin, displayUserInfo
 } from './controllers/users.js';
 
 const router = express.Router();
@@ -79,5 +79,8 @@ router.get('/logout', processLogout);
 
 // Protected dashboard route
 router.get('/dashboard', requireLogin, showDashboard);
+
+// User information route
+router.get('/user-info', requireRole('admin'), displayUserInfo);
 
 export default router;
