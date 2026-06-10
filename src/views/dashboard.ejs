@@ -5,7 +5,6 @@
             <%= title %>
         </h1>
 
-        <h2>Dashboard</h2>
         <p>Name: <%= name %>
         </p>
         <p>Username: <%= email %>
@@ -14,6 +13,23 @@
         <% if (user && user.role_name==='admin' ) { %>
             <a href="/user-info">Show users Information</a>
             <% } %>
+
+                <!-- Show volunteer functionality only if logged in -->
+                <% if (projects && user) { %>
+                    <% projects.forEach((project)=> { %>
+                        <li>
+                            <a href="/projects/<%= project.project_id %>">
+                                <%= project.title %>
+                            </a>
+                            <form action="/projects/<%= projects.project_id %>/unvolunteer" method="POST"
+                                style="display:inline;">
+                                <button type="submit" class="btn-remove-small">Remove</button>
+                            </form>
+                        </li>
+                        <% }) %>
+                            <% } else { %>
+                                <p>You haven’t signed up for any projects yet.</p>
+                                <% } %>
 
     </main>
 

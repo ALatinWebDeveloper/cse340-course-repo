@@ -71,8 +71,64 @@ const getAllUsers = async () => {
     const result = await db.query(query);
 
     return result.rows;
-}
+};
 
+const addvolunteer = async (userId, projectId) => {
+    const query = `
+    INSERT INTO project_volunteers (user_id, project_id)
+    VALUES ($1, $2)
+    RETURNING user_id;
+  `;
+    const queryParams = [userId, projectId];
+    const result = await db.query(query, queryParams);
 
+    if (result.rows.length === 0) {
+        throw new Error('Failed to sign up for project');
+    }
 
-export { createNewUser, findUserByEmail, verifyPassword, authenticateUser, getAllUsers };
+    if (process.env.ENABLE_SQL_LOGGING === 'true') {
+        console.log('User signed up for project:', userId, projectId);
+    }
+
+    return result.rows[0].user_id;
+};
+
+const isVolunteerForProject = async (userId, projectId) => {
+    const query = `
+        SELECT user_id
+        FROM project_volunteers
+        WHERE user_id = $1 AND project_id = $2
+    `;
+    const queryParams = [userId, projectId];
+    const result = await db.query(query, queryParams);
+
+    return result.rows.length > 0; // Returns true if user is a volunteer for the project
+};
+
+const projectsVolunteeredFor = async (userId) => {
+    const query = `
+        SELECT p.project_id, p.title, p.event_date
+        FROM project_volunteers pv
+        Join projects p ON pv.project_id = p.project_id
+        WHERE pv.user_id = $1
+        ORDER BY p.event_date ASC
+    `;
+
+    const queryParams = [userId];
+    const result = await db.query(query, queryParams);
+    return result.rows;
+};
+
+const removeVolunteerFromProject = async (userId, projectId) => {
+    const query = `
+        DELETE FROM project_volunteers
+        WHERE user_id = $1 AND project_id = $2
+    `;
+    const queryParams = [userId, projectId];
+    await db.query(query, queryParams);
+};
+
+export {
+    createNewUser, findUserByEmail, verifyPassword, authenticateUser,
+    getAllUsers, addvolunteer, isVolunteerForProject, projectsVolunteeredFor, removeVolunteerFromProject
+};

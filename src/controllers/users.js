@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
-import { createNewUser, authenticateUser, getAllUsers } from '../models/users.js';
+import { createNewUser, authenticateUser, getAllUsers, addvolunteer, projectsVolunteeredFor, removeVolunteerFromProject } from '../models/users.js';
+import { getAllProjects } from '../models/projects.js';
 
 const saltRounds = 10;
 
@@ -35,8 +36,6 @@ const showLoginForm = (req, res) => {
 
 const processLoginForm = async (req, res) => {
     const { email, password } = req.body;
-
-
 
     try {
 
@@ -82,13 +81,30 @@ const requireLogin = (req, res, next) => {
     next();
 };
 
-const showDashboard = (req, res) => {
-    const user = req.session.user;
-    res.render('dashboard', {
-        title: 'Dashboard',
-        name: user.name,
-        email: user.email
-    });
+const showDashboard = async (req, res) => {
+
+    try {
+
+        const userId = req.session.user.user_id;
+        const user = req.session.user;
+        const projects = await projectsVolunteeredFor(userId);
+        const title = 'Dashboard';
+
+        console.log('Volunteered projects for user', userId, ':', projects);
+
+        console.log('User info from session:', user);
+
+        res.render('dashboard', {
+            title,
+            name: user.name,
+            email: user.email,
+            projects
+        });
+    } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        req.flash('error', 'An error occurred while loading the dashboard. Please try again.');
+        res.redirect('/');
+    }
 };
 
 const requireRole = (role) => {
@@ -118,8 +134,38 @@ const displayUserInfo = async (req, res) => {
     res.render('user-info', { title, users: users || [] });
 }
 
+const processVolunteerSignup = async (req, res) => {
+    const userId = req.session.user.user_id;
+    const projectId = req.params.projectId;
+
+    try {
+        await addvolunteer(userId, projectId);
+        req.flash('success', 'You have successfully signed up to volunteer for this project!');
+        res.redirect('/project/' + projectId);
+    } catch (error) {
+        console.error('Error occurred while signing up for project:', error);
+        req.flash('error', 'An error occurred while signing up for the project. Please try again.');
+        res.redirect('/project/' + projectId);
+    }
+}
+
+const processVolunteerRemove = async (req, res) => {
+    const userId = req.session.user.user_id;
+    const projectId = req.params.projectId;
+
+    try {
+        await removeVolunteerFromProject(userId, projectId);
+        req.flash('success', 'You have successfully unsubscribed from this project.');
+        res.redirect('/project/' + projectId);
+    } catch (error) {
+        console.error('Error occurred while unsubscribing from project:', error);
+        req.flash('error', 'An error occurred while unsubscribing from the project. Please try again.');
+        res.redirect('/project/' + projectId);
+    }
+}
+
 export {
     showUserRegistrationForm, processUserRegistrationForm,
     showLoginForm, processLoginForm, processLogout, requireLogin,
-    requireRole, showDashboard, displayUserInfo
+    requireRole, showDashboard, displayUserInfo, processVolunteerSignup, processVolunteerRemove
 };

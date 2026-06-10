@@ -42,7 +42,23 @@
             <p><a href="/edit-project/<%= project.project_id %>">Edit this Project</a></p>
             <% } %>
 
-                <p><a href="/projects">← Back to Upcoming Projects</a></p>
+                <!-- Show volunteer functionality only if logged in -->
+                <% if (user) { %>
+                    <div class="volunteer-section">
+                        <% if (volunteer && user) { %>
+                            <p>✅ <strong>You are volunteering for this project.</strong></p>
+                            <form action="/project/<%= project.project_id %>/unvolunteer" method="POST">
+                                <button type="submit" class="btn-remove">Remove my sign-up</button>
+                            </form>
+                            <% } else { %>
+                                <form action="/project/<%= project.project_id %>/volunteer" method="POST">
+                                    <button type="submit" class="btn-volunteer">Sign Up to Volunteer</button>
+                                </form>
+                                <% } %>
+                    </div>
+                    <% } %>
+
+                        <p><a href="/projects">← Back to Upcoming Projects</a></p>
     </main>
 
     <%- include('partials/footer') %>

@@ -115,3 +115,21 @@ CREATE TABLE users (
 	role_id INTEGER REFERENCES roles (role_id),
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE project_volunteers (
+    user_id    INTEGER NOT NULL,
+    project_id INTEGER NOT NULL,
+    signed_up_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    PRIMARY KEY (user_id, project_id),
+    
+    CONSTRAINT fk_volunteer_user
+        FOREIGN KEY (user_id)
+        REFERENCES users (user_id)
+        ON DELETE CASCADE,
+        
+    CONSTRAINT fk_volunteer_project
+        FOREIGN KEY (project_id)
+        REFERENCES projects (project_id)
+        ON DELETE CASCADE
+);

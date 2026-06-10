@@ -21,7 +21,7 @@ import {
 
 import {
     showUserRegistrationForm, processUserRegistrationForm, showLoginForm,
-    processLoginForm, processLogout, showDashboard, requireRole, requireLogin, displayUserInfo
+    processLoginForm, processLogout, showDashboard, requireRole, requireLogin, displayUserInfo, processVolunteerSignup, processVolunteerRemove
 } from './controllers/users.js';
 
 const router = express.Router();
@@ -82,5 +82,10 @@ router.get('/dashboard', requireLogin, showDashboard);
 
 // User information route
 router.get('/user-info', requireRole('admin'), displayUserInfo);
+
+// Volunteer signup route
+router.post('/project/:projectId/volunteer', requireLogin, processVolunteerSignup);
+// Volunteer removal route
+router.post('/project/:projectId/unvolunteer', requireLogin, processVolunteerRemove);
 
 export default router;

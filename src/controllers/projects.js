@@ -1,6 +1,7 @@
 import { getAllProjects, getProjectDetails, getUpcomingProjects, getProjectsByOrganizationId, createProject, updateProject } from '../models/projects.js';
 import { getAllOrganizations } from '../models/organizations.js';
 import { body, validationResult } from 'express-validator';
+import { isVolunteerForProject } from '../models/users.js';
 
 const projectValidation = [
     body('title')
@@ -52,10 +53,14 @@ async function showProjectDetailsPage(req, res, next) {
             return next(err);   // now 'next' is defined
         }
 
+        const userId = req.session.user?.user_id;
+        const volunteer = await isVolunteerForProject(userId, projectId);
+
         res.render('project', {                        // Renders views/project.ejs
             title: project.title,
             project,
-            categories: project.categories                 // Include categories for this project
+            categories: project.categories,                // Include categories for this project
+            volunteer                        // Pass the volunteer status to the view
         });
     } catch (error) {
         // unexpected errors (e.g., database connection) -> 500
