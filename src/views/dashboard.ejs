@@ -16,12 +16,15 @@
 
                 <!-- Show volunteer functionality only if logged in -->
                 <% if (projects && user) { %>
-                    <% projects.forEach((project)=> { %>
+                    <% projects.forEach(project=> { %>
                         <li>
-                            <a href="/projects/<%= project.project_id %>">
+                            <!-- Link to project details (singular) -->
+                            <a href="/project/<%= project.project_id %>">
                                 <%= project.title %>
                             </a>
-                            <form action="/projects/<%= projects.project_id %>/unvolunteer" method="POST"
+
+                            <!-- Remove volunteer form -->
+                            <form action="/project/<%= project.project_id %>/unvolunteer" method="POST"
                                 style="display:inline;">
                                 <button type="submit" class="btn-remove-small">Remove</button>
                             </form>

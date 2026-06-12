@@ -74,11 +74,10 @@ const getAllUsers = async () => {
 };
 
 const addvolunteer = async (userId, projectId) => {
-    const query = `
-    INSERT INTO project_volunteers (user_id, project_id)
-    VALUES ($1, $2)
-    RETURNING user_id;
-  `;
+    const query = `INSERT INTO project_volunteers (user_id, project_id)
+        VALUES ($1, $2)
+        ON CONFLICT (user_id, project_id) DO NOTHING
+        RETURNING *`;
     const queryParams = [userId, projectId];
     const result = await db.query(query, queryParams);
 
@@ -120,12 +119,15 @@ const projectsVolunteeredFor = async (userId) => {
 };
 
 const removeVolunteerFromProject = async (userId, projectId) => {
+
     const query = `
         DELETE FROM project_volunteers
         WHERE user_id = $1 AND project_id = $2
+        RETURNING *
     `;
     const queryParams = [userId, projectId];
-    await db.query(query, queryParams);
+    const result = await db.query(query, queryParams);
+    return result;
 };
 
 export {
